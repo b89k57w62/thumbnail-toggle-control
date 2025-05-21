@@ -17,14 +17,17 @@ export default apiInitializer("0.11.1", (api) => {
     },
   });
 
-  // 使用新的 registerValueTransformer API
-  api.registerValueTransformer("post-menu-buttons", (buttons, attrs) => {
+  // 使用新的 registerValueTransformer API - 正確的參數格式
+  api.registerValueTransformer("post-menu-buttons", ({ value: buttons, context }) => {
+    // 獲取必要的上下文信息
+    const { post, currentUser } = context;
+    
     // 只在第一篇貼文、且使用者為 staff 時顯示
-    if (!attrs.currentUser?.staff) return buttons;
-    if (!attrs?.post) return buttons;
-    if (!attrs.post.post_number || attrs.post.post_number !== 1) return buttons;
+    if (!currentUser?.staff) return buttons;
+    if (!post) return buttons;
+    if (post.post_number !== 1) return buttons;
 
-    const topic = attrs.post.topic;
+    const topic = post.topic;
     const on = topic.get(`custom_fields.${FIELD}`) === true;
 
     // 添加按鈕到菜單
