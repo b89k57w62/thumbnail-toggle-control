@@ -5,22 +5,12 @@
 # authors: Jeffrey
 
 after_initialize do
-  ##
-  ## A. 註冊 custom field
-  ##
   Topic.register_custom_field_type('tlp_show_thumbnail', :boolean)
 
-  ##
-  ## B. 追蹤 field 變動
-  ##
   PostRevisor.track_topic_field(:tlp_show_thumbnail) do |tc, new_val|
     tc.topic.custom_fields['tlp_show_thumbnail'] = new_val
   end
 
-  ##
-  ## C. Patch TLP Sidecar 的 serializer
-  ##    只有開關為 true 時才回傳原本的 thumbnail_url
-  ##
   DiscourseEvent.on(:topic_previews_ready) do
     next unless defined?(::TopicPreviews::TopicListItemSerializerExtension)
 
@@ -36,6 +26,5 @@ after_initialize do
     ::TopicPreviews::TopicListItemSerializerExtension.prepend(
       ::TopicPreviews::ThumbTogglePatch
     )
-    Rails.logger.info("[thumbnail-toggle-control] ThumbTogglePatch applied")
   end
 end
