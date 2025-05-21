@@ -4,8 +4,6 @@
 # version: 0.1
 # authors: Jeffrey
 
-register_asset "javascripts/discourse/tlp-show-thumbnail-flag.js"
-
 after_initialize do
   # 1️⃣ 宣告一個 boolean custom field，存在 topics.custom_fields 裡
   Topic.register_custom_field_type('tlp_show_thumbnail', :boolean)
