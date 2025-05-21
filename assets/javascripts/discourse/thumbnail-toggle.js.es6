@@ -1,26 +1,28 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 export default {
-  name: "tlp-show-thumbnail-flag",
+  name: "thumbnail-toggle",
 
   initialize() {
-    console.log("[tlp-show-thumbnail-flag] initializer loaded");
+    console.log("[thumbnail-toggle] initializer loaded");
 
     withPluginApi("0.8.13", api => {
-      const FIELD = "tlp_show_thumbnail";
+      const FIELD = "thumbnail_toggle_enabled";
 
-      api.addPostMenuButton("thumbnail-flag", attrs => {
+      // Step 4：加一顆按鈕到 Topic Meta（🔧）下拉
+      api.addTopicMenuButton("thumbnail-flag", attrs => {
         if (!attrs.currentUser?.staff) return;
-        const enabled = attrs.post.get(`custom_fields.${FIELD}`) === true;
+        const on = attrs.topic.get(`custom_fields.${FIELD}`) === true;
         return {
           action: "toggleThumbnailFlag",
-          icon: enabled ? "image" : "image-slash",
-          title: enabled ? "隱藏縮圖" : "顯示縮圖",
+          icon: on ? "image" : "image-slash",
+          label: on ? "隱藏縮圖" : "顯示縮圖",
         };
       });
 
+      // Step 5：對應 controller:topic.action
       api.modifyClass("controller:topic", {
-        pluginId: "tlp-show-thumbnail-flag",
+        pluginId: "thumbnail-toggle",
         actions: {
           toggleThumbnailFlag() {
             const topic = this.model;
