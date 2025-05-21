@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# name: tlp-thumb-flag
+# name: thumbnail-toggle-control
 # about: Adds a boolean flag to decide whether TLP shows thumbnail
 # version: 0.1
 # authors: Jeffrey
