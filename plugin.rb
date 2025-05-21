@@ -5,26 +5,32 @@
 # authors: Jeffrey
 
 after_initialize do
+  # 1️⃣ 宣告一個 boolean custom field，存在 topics.custom_fields 裡
   Topic.register_custom_field_type('tlp_show_thumbnail', :boolean)
-  TopicList.preloaded_custom_fields << 'tlp_show_thumbnail'
-  TopicView.preloaded_custom_fields  << 'tlp_show_thumbnail'
 
+  # 2️⃣ 追蹤欄位變動（可回溯，不需要手動 save_custom_fields）
   PostRevisor.track_topic_field(:tlp_show_thumbnail) do |tc, new_val|
     tc.topic.custom_fields['tlp_show_thumbnail'] = new_val
   end
 
-  module ::TopicPreviews
-    module ThumbFlagPatch
-      def thumbnail_url
-        return nil unless object.custom_fields['tlp_show_thumbnail'] == true
-        super
+  # 3️⃣ 等 Sidecar 完全載入後，再把我們的 patch 加進去
+  DiscourseEvent.on(:topic_previews_ready) do
+    next unless defined?(::TopicPreviews::TopicListItemSerializerExtension)
+
+    module ::TopicPreviews
+      module ThumbFlagPatch
+        # 覆寫原本拿 thumbnail_url 的方法
+        def thumbnail_url
+          # 只有 custom_fields['tlp_show_thumbnail'] === true 時才 call super
+          return nil unless object.custom_fields['tlp_show_thumbnail'] == true
+          super
+        end
       end
     end
-  end
 
-  reloadable_patch do
-    TopicPreviews::TopicListItemSerializerExtension.prepend(
-      TopicPreviews::ThumbFlagPatch
+    ::TopicPreviews::TopicListItemSerializerExtension.prepend(
+      ::TopicPreviews::ThumbFlagPatch
     )
+    Rails.logger.info("[thumbnail-toggle-control] ThumbFlagPatch applied")
   end
 end
