@@ -1,13 +1,13 @@
 import { apiInitializer } from "discourse/lib/api";
 
 export default apiInitializer("1.4.0", (api) => {
-  const FIELD = "tlp_show_thumbnail";          // ← 與 plugin.rb 對應
+  const FIELD = "tlp_show_thumbnail";      // 必須與 plugin.rb 相同
 
   /*------------------------------------------------
-    ❶ 先註冊 controller action（TopicController）
+    ❶ controller action：切換布林並保存
   ------------------------------------------------*/
   api.modifyClass("controller:topic", {
-    pluginId: "thumbnail-toggle-control",
+    pluginId: "thumbnail-toggle",
     actions: {
       toggleThumbnailFlag() {
         const topic = this.model;
@@ -16,28 +16,33 @@ export default apiInitializer("1.4.0", (api) => {
 
         topic
           .save({ custom_fields: topic.custom_fields })
-          .then(() => this.appEvents.trigger("topic:custom-field-changed"));
+          .then(() =>
+            this.appEvents.trigger("topic:custom-field-changed")
+          );
       },
     },
   });
 
   /*------------------------------------------------
-    ❷ 再用新版 registerPostMenuButton 掛按鈕
+    ❷ 在第一篇貼文的 post-controls 末尾插入按鈕
   ------------------------------------------------*/
-  api.registerPostMenuButton("thumbnail-toggle-btn", (attrs) => {
-    // 只給 staff／admin，且限定第 1 樓
-    if (!attrs?.currentUser?.staff) return false;
-    if (attrs.post_number !== 1)     return false;
+  api.decorateWidget("post-controls:after", (helper) => {
+    const currentUser = helper.attrs.currentUser;
+    const post        = helper.getModel();          // 目前這個 widget 對應的 Post
 
-    const on  = attrs.topic.custom_fields?.[FIELD] === true;
+    // 只給 staff/admin，且僅限第一篇貼文
+    if (!currentUser?.staff)   return;
+    if (post.post_number !== 1) return;
 
-    return {
-      action: "toggleThumbnailFlag",               // 對應 controller action
-      icon:   on ? "image" : "image-slash",
-      label:  on ? "thumbnail_toggle.hide"
-                : "thumbnail_toggle.show",
-      className: "thumbnail-toggle-btn",           // 任意 CSS class
-      position: "last",                            // 放在最右（可調 first / second…）
-    };
+    const topic = post.topic;
+    const on    = topic.custom_fields?.[FIELD] === true;
+
+    return helper.attach("button", {
+      icon:      on ? "image" : "image-slash",
+      title:     helper.i18n(on ? "thumbnail_toggle.hide"
+                                : "thumbnail_toggle.show"),
+      className: "thumbnail-toggle-btn",
+      action:    "toggleThumbnailFlag",    // ← 綁到 Step ❶ 的 action
+    });
   });
 });
