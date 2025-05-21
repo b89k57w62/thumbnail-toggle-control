@@ -1,15 +1,19 @@
 import { apiInitializer } from "discourse/lib/api";
 
-export default apiInitializer("0.11.1", (api) => {
-  const FIELD = "thumbnail_toggle_enabled";
+export default apiInitializer("1.4.0", (api) => {
+  const FIELD = "tlp_show_thumbnail";          // ← 與 plugin.rb 對應
 
+  /*------------------------------------------------
+    ❶ 先註冊 controller action（TopicController）
+  ------------------------------------------------*/
   api.modifyClass("controller:topic", {
-    pluginId: "thumbnail-toggle",
+    pluginId: "thumbnail-toggle-control",
     actions: {
       toggleThumbnailFlag() {
         const topic = this.model;
-        const curr = topic.get(`custom_fields.${FIELD}`) === true;
+        const curr  = topic.get(`custom_fields.${FIELD}`) === true;
         topic.set(`custom_fields.${FIELD}`, !curr);
+
         topic
           .save({ custom_fields: topic.custom_fields })
           .then(() => this.appEvents.trigger("topic:custom-field-changed"));
@@ -17,29 +21,23 @@ export default apiInitializer("0.11.1", (api) => {
     },
   });
 
-  // 使用新的 registerValueTransformer API - 正確的參數格式
-  api.registerValueTransformer("post-menu-buttons", ({ value: buttons, context }) => {
-    // 獲取必要的上下文信息
-    const { post, currentUser } = context;
-    
-    // 只在第一篇貼文、且使用者為 staff 時顯示
-    if (!currentUser?.staff) return buttons;
-    if (!post) return buttons;
-    if (post.post_number !== 1) return buttons;
+  /*------------------------------------------------
+    ❷ 再用新版 registerPostMenuButton 掛按鈕
+  ------------------------------------------------*/
+  api.registerPostMenuButton("thumbnail-toggle-btn", (attrs) => {
+    // 只給 staff／admin，且限定第 1 樓
+    if (!attrs?.currentUser?.staff) return false;
+    if (attrs.post_number !== 1)     return false;
 
-    const topic = post.topic;
-    const on = topic.get(`custom_fields.${FIELD}`) === true;
+    const on  = attrs.topic.custom_fields?.[FIELD] === true;
 
-    // 添加按鈕到菜單
-    buttons.push({
-      action: "toggleThumbnailFlag",
-      icon: on ? "image" : "image-slash",
-      title: on ? "thumbnail_toggle.hide" : "thumbnail_toggle.show",
-      label: on ? "thumbnail_toggle.hide" : "thumbnail_toggle.show",
-      className: "thumbnail-toggle-btn",
-      position: "first",
-    });
-    
-    return buttons;
+    return {
+      action: "toggleThumbnailFlag",               // 對應 controller action
+      icon:   on ? "image" : "image-slash",
+      label:  on ? "thumbnail_toggle.hide"
+                : "thumbnail_toggle.show",
+      className: "thumbnail-toggle-btn",           // 任意 CSS class
+      position: "last",                            // 放在最右（可調 first / second…）
+    };
   });
-}); 
+});

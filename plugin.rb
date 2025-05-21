@@ -8,13 +8,13 @@ after_initialize do
   ##
   ## A. 註冊 custom field
   ##
-  Topic.register_custom_field_type('thumbnail_toggle_enabled', :boolean)
+  Topic.register_custom_field_type('tlp_show_thumbnail', :boolean)
 
   ##
   ## B. 追蹤 field 變動
   ##
-  PostRevisor.track_topic_field(:thumbnail_toggle_enabled) do |tc, new_val|
-    tc.topic.custom_fields['thumbnail_toggle_enabled'] = new_val
+  PostRevisor.track_topic_field(:tlp_show_thumbnail) do |tc, new_val|
+    tc.topic.custom_fields['tlp_show_thumbnail'] = new_val
   end
 
   ##
@@ -27,7 +27,7 @@ after_initialize do
     module ::TopicPreviews
       module ThumbTogglePatch
         def thumbnail_url
-          return nil unless object.custom_fields['thumbnail_toggle_enabled'] == true
+          return nil unless object.custom_fields['tlp_show_thumbnail'] == true
           super
         end
       end
