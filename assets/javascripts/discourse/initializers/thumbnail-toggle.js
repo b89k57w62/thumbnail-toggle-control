@@ -17,23 +17,26 @@ export default apiInitializer("0.11.1", (api) => {
     },
   });
 
-  // 使用舊的 addPostMenuButton API - 這在大多數 Discourse 版本中都支持
-  api.addPostMenuButton("thumbnailToggle", (attrs) => {
+  // 使用新的 registerValueTransformer API
+  api.registerValueTransformer("post-menu-buttons", (buttons, attrs) => {
     // 只在第一篇貼文、且使用者為 staff 時顯示
-    if (!attrs.currentUser?.staff) return;
-    if (!attrs.post) return;
-    if (attrs.post.post_number !== 1) return;
+    if (!attrs.currentUser?.staff) return buttons;
+    if (!attrs?.post) return buttons;
+    if (!attrs.post.post_number || attrs.post.post_number !== 1) return buttons;
 
     const topic = attrs.post.topic;
     const on = topic.get(`custom_fields.${FIELD}`) === true;
 
-    return {
+    // 添加按鈕到菜單
+    buttons.push({
       action: "toggleThumbnailFlag",
       icon: on ? "image" : "image-slash",
       title: on ? "thumbnail_toggle.hide" : "thumbnail_toggle.show",
       label: on ? "thumbnail_toggle.hide" : "thumbnail_toggle.show",
       className: "thumbnail-toggle-btn",
       position: "first",
-    };
+    });
+    
+    return buttons;
   });
 }); 
