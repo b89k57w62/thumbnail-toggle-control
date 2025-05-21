@@ -1,0 +1,5 @@
+en:
+  js:
+    thumbnail_toggle:
+      show: "Show thumbnail"
+      hide: "Hide thumbnail" 
