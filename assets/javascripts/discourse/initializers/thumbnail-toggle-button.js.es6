@@ -1,36 +1,37 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
+
 export default {
   name: "thumbnail-toggle-control",
   initialize() {
     withPluginApi("1.4.0", api => {
-      api.serializeToTopic("tlp_show_thumbnail", "topic.custom_fields.tlp_show_thumbnail");
-
-      api.decorateWidget("connector:topic-list-main-link-bottom:after", helper => {
-        const { topic } = helper.attrs;
-        if (!topic.thumbnail_url) return;
-        return helper.h("button.btn-icon.toggle-thumbnail-btn", {
-          title: helper.i18n(topic.tlp_show_thumbnail ? "thumbnail_toggle.hide" : "thumbnail_toggle.show"),
-          onclick: async () => {
+      // We don't need to serialize the topic here, as we're already doing it in plugin.rb
+      
+      // Add our actions to the topic list item component
+      api.modifyClass("component:topic-list-item", {
+        actions: {
+          toggleThumbnail() {
+            const topic = this.topic;
+            if (!topic) return;
+            
             const newVal = !topic.tlp_show_thumbnail;
-            topic.set("custom_fields", { ...topic.custom_fields, tlp_show_thumbnail: newVal });
-            await topic.save({ custom_fields: topic.custom_fields });
-            helper.scheduleRerender();
+            topic.set("custom_fields", Object.assign({}, topic.custom_fields, { tlp_show_thumbnail: newVal }));
+            topic.save({ custom_fields: topic.custom_fields });
           }
-        }, helper.h("i.fa", { class: topic.tlp_show_thumbnail ? "fa-image-slash" : "fa-image" }));
+        }
       });
-
-      api.decorateWidget("connector:topic-title-thumbnail:after", helper => {
-        const model = helper.attrs.outletArgs.model;
-        if (!model.thumbnail_url) return;
-        return helper.h("button.btn-icon.toggle-thumbnail-btn", {
-          title: helper.i18n(model.tlp_show_thumbnail ? "thumbnail_toggle.hide" : "thumbnail_toggle.show"),
-          onclick: async () => {
+      
+      // Add our actions to the topic controller for use in topic view
+      api.modifyClass("controller:topic", {
+        actions: {
+          toggleThumbnail() {
+            const model = this.model;
+            if (!model) return;
+            
             const newVal = !model.tlp_show_thumbnail;
-            model.set("custom_fields", { ...model.custom_fields, tlp_show_thumbnail: newVal });
-            await model.save({ custom_fields: model.custom_fields });
-            helper.scheduleRerender();
+            model.set("custom_fields", Object.assign({}, model.custom_fields, { tlp_show_thumbnail: newVal }));
+            model.save({ custom_fields: model.custom_fields });
           }
-        }, helper.h("i.fa", { class: model.tlp_show_thumbnail ? "fa-image-slash" : "fa-image" }));
+        }
       });
     });
   }
