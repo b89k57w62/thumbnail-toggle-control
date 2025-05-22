@@ -1,5 +1,3 @@
-console.log("[thumbnail-toggle-button] initializer loaded");
-
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 export default {
@@ -7,11 +5,9 @@ export default {
 
   initialize() {
     withPluginApi("0.11.1", (api) => {
-      api.decorateWidget("component-connector:after", (helper) => {
-        // 只针对 TLP 缩图的 connector
-        if (helper.attrs.name !== "topic-list-item-thumbnail") {
-          return;
-        }
+      api.decorateWidget("connector:after", (helper) => {
+        // 只对 topic-list-item-thumbnail 这个 outlet 生效
+        if (helper.attrs.name !== "topic-list-item-thumbnail") return;
 
         const { topic, currentUser } = helper.attrs;
         if (!currentUser?.staff) return;
