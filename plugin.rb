@@ -13,6 +13,10 @@ after_initialize do
   # 2️⃣ 讓 PostRevisor 幫我們追蹤這個欄位的變動
   PostRevisor.track_topic_field(:tlp_show_thumbnail) do |tc, v|
     tc.topic.custom_fields['tlp_show_thumbnail'] = v
+    tc.topic.save_custom_fields(true)
+    
+    # 觸發自定義事件
+    DiscourseEvent.trigger(:thumbnail_state_changed, tc.topic, v)
   end
 
   # 3️⃣ 預先把 custom_fields 撈出，避免 N+1 查詢
@@ -33,6 +37,12 @@ after_initialize do
   # 序列化到 topic view
   add_to_serializer(:topic_view, :tlp_show_thumbnail) do
     object.topic.custom_fields['tlp_show_thumbnail']
+  end
+
+  # 監聽事件進行額外操作（如果需要）
+  on(:thumbnail_state_changed) do |topic, value|
+    # 如果需要進行額外操作，例如清除快取等
+    # 暫時留空
   end
 
   # 4️⃣ Patch TLP 的 Serializer：只有在 flag = true 時，才把原本的 thumbnail_url 回傳給前端

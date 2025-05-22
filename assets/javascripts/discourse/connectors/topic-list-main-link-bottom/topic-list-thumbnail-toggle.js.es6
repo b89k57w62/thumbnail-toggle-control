@@ -1,3 +1,5 @@
+import ThumbnailToggleHelper from "../../lib/thumbnail-toggle-helper";
+
 export default {
   setupComponent(args, component) {
     component.set("topic", args.topic);
@@ -5,12 +7,7 @@ export default {
   
   actions: {
     toggleThumbnail() {
-      const topic = this.get("topic");
-      if (!topic) return;
-      
-      const newVal = !topic.tlp_show_thumbnail;
-      topic.set("custom_fields", Object.assign({}, topic.custom_fields, { tlp_show_thumbnail: newVal }));
-      topic.save({ custom_fields: topic.custom_fields });
+      ThumbnailToggleHelper.toggleThumbnail(this.get("topic"));
     }
   }
 }; 

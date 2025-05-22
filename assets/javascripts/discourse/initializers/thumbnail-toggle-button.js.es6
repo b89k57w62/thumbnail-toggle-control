@@ -1,36 +1,32 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
+import ThumbnailToggleHelper from "../lib/thumbnail-toggle-helper";
 
 export default {
   name: "thumbnail-toggle-control",
   initialize() {
     withPluginApi("1.4.0", api => {
-      // We don't need to serialize the topic here, as we're already doing it in plugin.rb
-      
-      // Add our actions to the topic list item component
-      api.modifyClass("component:topic-list-item", {
+      // 全域註冊主題控制器的操作
+      api.modifyClass("controller:topic", {
         actions: {
           toggleThumbnail() {
-            const topic = this.topic;
-            if (!topic) return;
-            
-            const newVal = !topic.tlp_show_thumbnail;
-            topic.set("custom_fields", Object.assign({}, topic.custom_fields, { tlp_show_thumbnail: newVal }));
-            topic.save({ custom_fields: topic.custom_fields });
+            ThumbnailToggleHelper.toggleThumbnail(this.model);
           }
         }
       });
       
-      // Add our actions to the topic controller for use in topic view
-      api.modifyClass("controller:topic", {
+      // 全域註冊主題列表項目的操作
+      api.modifyClass("component:topic-list-item", {
         actions: {
           toggleThumbnail() {
-            const model = this.model;
-            if (!model) return;
-            
-            const newVal = !model.tlp_show_thumbnail;
-            model.set("custom_fields", Object.assign({}, model.custom_fields, { tlp_show_thumbnail: newVal }));
-            model.save({ custom_fields: model.custom_fields });
+            ThumbnailToggleHelper.toggleThumbnail(this.topic);
           }
+        }
+      });
+      
+      // 確保我們可以在 outlet 中獲取主題數據
+      api.reopenWidget("topic-list-item", {
+        toggleThumbnail() {
+          ThumbnailToggleHelper.toggleThumbnail(this.findAncestorModel());
         }
       });
     });
