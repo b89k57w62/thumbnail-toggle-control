@@ -1,5 +1,13 @@
 en:
   js:
     thumbnail_toggle:
-      show: "Show thumbnail"
-      hide: "Hide thumbnail" 
+      title: "Thumbnail Toggle"
+      show: "Show Thumbnail"
+      hide: "Hide Thumbnail"
+    category:
+      thumbnail_toggle_enabled: "Enable thumbnail toggle for topics in this category"
+      thumbnail_toggle_default: "Default state of thumbnails in this category (checked = shown)"
+    site_settings:
+      thumbnail_toggle_enabled: "Enable the thumbnail toggle feature site-wide"
+      thumbnail_toggle_category_override: "Allow category settings to override global thumbnail settings"
+      thumbnail_toggle_default: "Default state for thumbnails (checked = shown by default)" 

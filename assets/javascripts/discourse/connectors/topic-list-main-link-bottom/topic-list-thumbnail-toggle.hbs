@@ -1,9 +1,0 @@
-{{#if topic.thumbnail_url}}
-  <button
-    class="btn-icon toggle-thumbnail-btn"
-    title={{i18n (if topic.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}}
-    {{action "toggleThumbnail"}}
-  >
-    <i class="fa {{if topic.tlp_show_thumbnail "fa-image-slash" "fa-image"}}"></i>
-  </button>
-{{/if}}
