@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: thumbnail-toggle-control
 # about: Adds a boolean flag to decide whether TLP shows thumbnail
-# version: 0.1
+# version: 0.2
 # authors: Jeffrey
 
 after_initialize do
