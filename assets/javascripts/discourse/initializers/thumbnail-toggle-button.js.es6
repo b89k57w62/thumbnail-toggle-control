@@ -7,7 +7,12 @@ export default {
 
   initialize() {
     withPluginApi("0.11.1", (api) => {
-      api.decorateWidget("topic-list-item-thumbnail:after", (helper) => {
+      api.decorateWidget("component-connector:after", (helper) => {
+        // 只针对 TLP 缩图的 connector
+        if (helper.attrs.name !== "topic-list-item-thumbnail") {
+          return;
+        }
+
         const { topic, currentUser } = helper.attrs;
         if (!currentUser?.staff) return;
 
