@@ -1,0 +1,10 @@
+{{!-- 同理：只有有縮圖時才顯示 --}}
+{{#if @outletArgs.model.thumbnail_url}}
+  <button
+    class="btn-icon toggle-thumbnail-btn"
+    title={{i18n (if @outletArgs.model.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}}
+    {{on "click" this.toggleThumbnail}}
+  >
+    <i class="fa" class={{if @outletArgs.model.tlp_show_thumbnail "fa-image-slash" "fa-image"}}></i>
+  </button>
+{{/if}}
