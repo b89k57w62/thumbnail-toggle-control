@@ -1,27 +1,31 @@
-# frozen_string_literal: true
-# name: thumbnail-toggle-control
-# about: Adds a boolean flag to decide whether TLP shows thumbnail
-# version: 0.2
+# name: discourse-thumbnail-toggle
+# about: Adds a toggle button to show/hide topic thumbnails via a custom_field
+# version: 0.7
 # authors: Jeffrey
+# url: https://github.com/b89k57w62/discourse-thumbnail-toggle
 
 after_initialize do
+  # 1️⃣ 註冊一個布林型 custom_field 存放顯示狀態
   Topic.register_custom_field_type('tlp_show_thumbnail', :boolean)
 
+  # 2️⃣ 讓 PostRevisor 幫我們追蹤這個欄位的變動
   PostRevisor.track_topic_field(:tlp_show_thumbnail) do |tc, v|
     tc.topic.custom_fields['tlp_show_thumbnail'] = v
   end
 
-  # ★ 讓 TopicList 一次把欄位帶回，避免 N+1
-  TopicList.preloaded_custom_fields << 'tlp_show_thumbnail' if
-    TopicList.respond_to?(:preloaded_custom_fields)
+  # 3️⃣ 預先把 custom_fields 撈出，避免 N+1 查詢
+  if TopicList.respond_to?(:preloaded_custom_fields)
+    TopicList.preloaded_custom_fields << 'tlp_show_thumbnail'
+  end
 
+  # 4️⃣ Patch TLP 的 Serializer：只有在 flag = true 時，才把原本的 thumbnail_url 回傳給前端
   DiscourseEvent.on(:topic_previews_ready) do
     next unless defined?(::TopicPreviews::TopicListItemSerializerExtension)
 
     module ::TopicPreviews
       module ThumbTogglePatch
         def thumbnail_url
-          return nil unless object.custom_fields['tlp_show_thumbnail'] == true
+          return nil unless object.custom_fields['tlp_show_thumbnail']
           super
         end
       end
