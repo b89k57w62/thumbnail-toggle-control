@@ -1,49 +1,57 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
-import ThumbnailToggleHelper from "../lib/thumbnail-toggle-helper";
+import { getOwner } from "discourse-common/lib/get-owner";
 
 export default {
   name: "thumbnail-toggle-initializer",
-  initialize() {
+  initialize(container) {
     withPluginApi("1.4.0", api => {
-      // 1. 處理主題列表中的縮圖顯示
-      api.decorateWidget("topic-list-item:after", helper => {
-        const topic = helper.attrs.topic;
-        if (!topic || !topic.thumbnail_url) return;
-        
-        // 判斷是否應該顯示縮圖切換按鈕
-        const siteSettings = helper.widget.siteSettings;
-        if (!siteSettings.thumbnail_toggle_enabled) return;
-        
-        // 創建縮圖切換按鈕
-        return helper.attach("thumbnail-toggle-button", {
-          topic,
-          showThumbnail: ThumbnailToggleHelper.shouldShowThumbnail(topic, siteSettings)
-        });
+      // 註冊 MessageBus 監聽
+      api.MessageBus.subscribe("/thumbnail-toggle/ready", () => {
+        console.log("Thumbnail Toggle 插件已準備好");
       });
       
-      // 2. 處理主題頁面中的縮圖顯示
-      api.decorateWidget("topic-title:after", helper => {
-        const topic = helper.getModel();
-        if (!topic || !topic.thumbnail_url) return;
-        
-        // 判斷是否應該顯示縮圖切換按鈕
-        const siteSettings = helper.widget.siteSettings;
-        if (!siteSettings.thumbnail_toggle_enabled) return;
-        
-        // 創建縮圖切換按鈕
-        return helper.attach("thumbnail-toggle-button", {
-          topic,
-          showThumbnail: ThumbnailToggleHelper.shouldShowThumbnail(topic, siteSettings)
-        });
+      // 自定義事件處理
+      api.modifyClass("component:topic-list-item", {
+        didInsertElement() {
+          this._super(...arguments);
+          
+          // 確保我們有主題資料
+          const topic = this.get("topic");
+          if (!topic) return;
+          
+          // 在主題上添加 tlp_show_thumbnail 觀察器
+          // 當值變化時強制重新渲染
+          if (!topic._tlpObserverAdded) {
+            topic.addObserver("tlp_show_thumbnail", () => {
+              this.queueRerender();
+            });
+            topic._tlpObserverAdded = true;
+          }
+        }
       });
       
-      // 3. Patch TLP 的 Serializer
+      // 在主題頁面也添加處理
       api.modifyClass("controller:topic", {
         actions: {
           toggleThumbnail() {
-            const model = this.model;
-            if (!model) return;
-            ThumbnailToggleHelper.toggleThumbnail(model);
+            const topic = this.model.topic || this.model;
+            if (!topic) return;
+            
+            const currentValue = topic.get("tlp_show_thumbnail");
+            const newValue = !currentValue;
+            
+            // 顯示即時反饋
+            topic.set("tlp_show_thumbnail", newValue);
+            
+            // 發送請求到伺服器
+            this.store.update("topic", {
+              id: topic.id,
+              tlp_show_thumbnail: newValue
+            }).catch(error => {
+              // 如果失敗，回滾操作
+              topic.set("tlp_show_thumbnail", currentValue);
+              console.error("無法更新縮圖狀態", error);
+            });
           }
         }
       });

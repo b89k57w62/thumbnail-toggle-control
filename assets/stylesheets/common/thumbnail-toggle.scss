@@ -11,4 +11,22 @@
     background: var(--primary-low);
     border-radius: 4px;
   }
+}
+
+// 主題頁面中的樣式
+.topic-thumbnail-toggle {
+  margin: 0.5em 0;
+  
+  .toggle-thumbnail-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    background: var(--primary-very-low);
+    
+    &:hover {
+      background: var(--primary-low);
+    }
+  }
 } 

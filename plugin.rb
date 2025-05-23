@@ -1,6 +1,6 @@
 # name: discourse-thumbnail-toggle
 # about: Adds a toggle button to show/hide topic thumbnails via a custom_field
-# version: 1.0
+# version: 1.1
 # authors: Jeffrey
 # url: https://github.com/b89k57w62/discourse-thumbnail-toggle
 
@@ -66,21 +66,27 @@ after_initialize do
     # 將來可能的操作，例如通知、日誌等
   end
 
-  # 10. Patch TLP 的 Serializer
+  # 10. 整合 TLP 元件 (如果存在)
   DiscourseEvent.on(:topic_previews_ready) do
-    next unless defined?(::TopicPreviews::TopicListItemSerializerExtension)
-
-    module ::TopicPreviews
-      module ThumbTogglePatch
-        def thumbnail_url
-          return nil unless object.tlp_show_thumbnail
-          super
+    if defined?(::TopicPreviews)
+      # 發送準備好的事件給前端
+      MessageBus.publish('/thumbnail-toggle/ready', {})
+      
+      # 修補 TLP 的序列化器 (只在伺服器端)
+      if defined?(::TopicPreviews::TopicListItemSerializerExtension)
+        module ::TopicPreviews
+          module ThumbTogglePatch
+            def thumbnail_url
+              return nil unless object.tlp_show_thumbnail
+              super
+            end
+          end
         end
+
+        ::TopicPreviews::TopicListItemSerializerExtension.prepend(
+          ::TopicPreviews::ThumbTogglePatch
+        )
       end
     end
-
-    ::TopicPreviews::TopicListItemSerializerExtension.prepend(
-      ::TopicPreviews::ThumbTogglePatch
-    )
   end
 end
