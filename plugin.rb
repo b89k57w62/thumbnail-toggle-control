@@ -79,9 +79,9 @@ after_initialize do
       def image_url
         Rails.logger.info "TopicListItemSerializer#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
         
-        # 更嚴格的布爾值檢查
+        # 修復布爾值檢查 - 直接檢查是否為 false
         show_thumbnail = object.tlp_show_thumbnail
-        if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+        if show_thumbnail == false || show_thumbnail.nil?
           Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
           return nil
         end
@@ -96,9 +96,9 @@ after_initialize do
       def image_url
         Rails.logger.info "TopicListItemSerializer#image_url (new) called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
         
-        # 更嚴格的布爾值檢查
+        # 修復布爾值檢查 - 直接檢查是否為 false
         show_thumbnail = object.tlp_show_thumbnail
-        if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+        if show_thumbnail == false || show_thumbnail.nil?
           Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
           return nil
         end
@@ -117,9 +117,9 @@ after_initialize do
       def thumbnail_url
         Rails.logger.info "TopicListItemSerializer#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
         
-        # 更嚴格的布爾值檢查
+        # 修復布爾值檢查 - 直接檢查是否為 false
         show_thumbnail = object.tlp_show_thumbnail
-        if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+        if show_thumbnail == false || show_thumbnail.nil?
           Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
           return nil
         end
@@ -144,9 +144,9 @@ after_initialize do
         def image_url
           Rails.logger.info "TopicListItemEditsMixin#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
           
-          # 更嚴格的布爾值檢查
+          # 修復布爾值檢查 - 直接檢查是否為 false
           show_thumbnail = object.tlp_show_thumbnail
-          if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+          if show_thumbnail == false || show_thumbnail.nil?
             Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
             return nil
           end
@@ -164,9 +164,9 @@ after_initialize do
         def thumbnail_url
           Rails.logger.info "TopicListItemEditsMixin#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
           
-          # 更嚴格的布爾值檢查
+          # 修復布爾值檢查 - 直接檢查是否為 false
           show_thumbnail = object.tlp_show_thumbnail
-          if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+          if show_thumbnail == false || show_thumbnail.nil?
             Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
             return nil
           end
