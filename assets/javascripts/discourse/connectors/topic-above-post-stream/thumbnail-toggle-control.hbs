@@ -1,16 +1,9 @@
-{{log @outletArgs}}
 {{#if this.siteSettings.thumbnail_toggle_enabled}}
   {{#if this.currentUser.admin}}
     <div class="topic-thumbnail-toggle">
       <button class="btn-icon toggle-thumbnail-btn" title={{i18n (if this.topic.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}} {{on "click" this.toggleThumbnail}}>
         {{d-icon (if this.topic.tlp_show_thumbnail "far-image-slash" "far-image")}}
-        {{i18n (if this.topic.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}}
       </button>
-      <small style="font-size: 0.8em; color: #666; margin-left: 10px;">
-        調試: ID={{this.topic.id}} | 狀態={{this.topic.tlp_show_thumbnail}}
-        <br>
-        OutletArgs: {{@outletArgs.model.id}} | {{@outletArgs.model.tlp_show_thumbnail}}
-      </small>
     </div>
   {{/if}}
 {{/if}} 

@@ -6,21 +6,14 @@
                 title="隱藏縮圖" 
                 onclick="toggleThumbnail({{context.topic.id}})">
           <i class="d-icon d-icon-far-image"></i>
-          隱藏縮圖
         </button>
       {{else}}
         <button class="btn-icon toggle-thumbnail-btn" 
                 title="顯示縮圖" 
                 onclick="toggleThumbnail({{context.topic.id}})">
           <i class="d-icon d-icon-far-image-slash"></i>
-          顯示縮圖
         </button>
       {{/if}}
-      <small>
-        調試: ID={{context.topic.id}} | 狀態={{context.topic.tlp_show_thumbnail}}
-        <br>
-        圖片URL: {{context.topic.image_url}}
-      </small>
     </div>
   {{/if}}
 {{/if}} 

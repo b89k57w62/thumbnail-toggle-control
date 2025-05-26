@@ -19,16 +19,11 @@ export default class ThumbnailToggleControl extends Component {
   toggleThumbnail() {
     const topic = this.topic;
     if (!topic) {
-      console.error("無法找到主題對象");
       return;
     }
     
-    console.log("切換縮圖狀態，主題ID:", topic.id);
-    
     const currentValue = topic.get("tlp_show_thumbnail");
     const newValue = !currentValue;
-    
-    console.log("當前值:", currentValue, "新值:", newValue);
     
     // 顯示即時反饋
     topic.set("tlp_show_thumbnail", newValue);
@@ -40,13 +35,11 @@ export default class ThumbnailToggleControl extends Component {
         tlp_show_thumbnail: newValue 
       }
     }).then(() => {
-      console.log("縮圖狀態更新成功");
       // 觸發重新渲染
       topic.notifyPropertyChange("tlp_show_thumbnail");
     }).catch(error => {
       // 如果失敗，回滾操作
       topic.set("tlp_show_thumbnail", currentValue);
-      console.error("無法更新縮圖狀態", error);
     });
   }
 } 
