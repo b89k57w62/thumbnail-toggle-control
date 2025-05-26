@@ -1,7 +1,7 @@
-{{#if siteSettings.thumbnail_toggle_enabled}}
-  {{#if context.topic.thumbnail_url}}
-    <button class="btn-icon toggle-thumbnail-btn" title={{i18n (if context.topic.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}} {{on "click" (action "toggleThumbnail")}}>
-      {{d-icon (if context.topic.tlp_show_thumbnail "far-image-slash" "far-image")}}
+{{#if this.siteSettings.thumbnail_toggle_enabled}}
+  {{#if this.context.topic.thumbnail_url}}
+    <button class="btn-icon toggle-thumbnail-btn" title={{i18n (if this.context.topic.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}} {{on "click" (action "toggleThumbnail")}}>
+      {{d-icon (if this.context.topic.tlp_show_thumbnail "far-image-slash" "far-image")}}
     </button>
   {{/if}}
 {{/if}} 

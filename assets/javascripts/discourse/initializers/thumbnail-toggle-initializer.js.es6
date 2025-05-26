@@ -1,18 +1,15 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
-import { MessageBus } from "discourse/lib/message-bus";
+import { ajax } from "discourse/lib/ajax";
 
 
 export default {
   name: "thumbnail-toggle-initializer",
   initialize(container) {
     withPluginApi("1.4.0", api => {
-      // 註冊 MessageBus 監聽
-      MessageBus.subscribe("/thumbnail-toggle/ready", () => {
-        console.log("Thumbnail Toggle 插件已準備好");
-      });
       
       // 自定義事件處理
       api.modifyClass("component:topic-list-item", {
+        pluginId: "discourse-thumbnail-toggle",
         didInsertElement() {
           this._super(...arguments);
           
@@ -33,6 +30,7 @@ export default {
       
       // 在主題頁面也添加處理
       api.modifyClass("controller:topic", {
+        pluginId: "discourse-thumbnail-toggle",
         actions: {
           toggleThumbnail() {
             const topic = this.model.topic || this.model;
@@ -44,10 +42,12 @@ export default {
             // 顯示即時反饋
             topic.set("tlp_show_thumbnail", newValue);
             
-            // 發送請求到伺服器
-            this.store.update("topic", {
-              id: topic.id,
-              tlp_show_thumbnail: newValue
+            // 使用 ajax 發送請求到伺服器
+            ajax(`/t/${topic.id}`, {
+              type: "PUT",
+              data: { 
+                tlp_show_thumbnail: newValue 
+              }
             }).catch(error => {
               // 如果失敗，回滾操作
               topic.set("tlp_show_thumbnail", currentValue);

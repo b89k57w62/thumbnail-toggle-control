@@ -1,16 +1,16 @@
-{{#if siteSettings.thumbnail_toggle_enabled}}
+{{#if this.siteSettings.thumbnail_toggle_enabled}}
   <h3>{{i18n "thumbnail_toggle.title"}}</h3>
   
   <div class="control-group">
     <label>
-      {{input type="checkbox" checked=category.custom_fields.thumbnail_toggle_enabled}}
+      {{input type="checkbox" checked=this.category.custom_fields.thumbnail_toggle_enabled}}
       {{i18n "category.thumbnail_toggle_enabled"}}
     </label>
   </div>
   
   <div class="control-group">
     <label>
-      {{input type="checkbox" checked=category.custom_fields.thumbnail_toggle_default}}
+      {{input type="checkbox" checked=this.category.custom_fields.thumbnail_toggle_default}}
       {{i18n "category.thumbnail_toggle_default"}}
     </label>
   </div>

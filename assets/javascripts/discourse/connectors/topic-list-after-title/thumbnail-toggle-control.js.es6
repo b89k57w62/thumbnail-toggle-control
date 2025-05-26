@@ -1,5 +1,4 @@
 import { ajax } from "discourse/lib/ajax";
-import ThumbnailToggleHelper from "../../lib/thumbnail-toggle-helper";
 
 export default {
   setupComponent(attrs, component) {
@@ -13,8 +12,23 @@ export default {
       const topic = this.get("context.topic");
       if (!topic) return;
       
-      // 使用幫助類來處理邏輯
-      ThumbnailToggleHelper.toggleThumbnail(topic);
+      const currentValue = topic.get("tlp_show_thumbnail");
+      const newValue = !currentValue;
+      
+      // 顯示即時反饋
+      topic.set("tlp_show_thumbnail", newValue);
+      
+      // 使用 ajax 發送請求到伺服器
+      ajax(`/t/${topic.id}`, {
+        type: "PUT",
+        data: { 
+          tlp_show_thumbnail: newValue 
+        }
+      }).catch(error => {
+        // 如果失敗，回滾操作
+        topic.set("tlp_show_thumbnail", currentValue);
+        console.error("無法更新縮圖狀態", error);
+      });
     }
   }
 }; 

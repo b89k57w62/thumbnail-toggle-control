@@ -69,9 +69,6 @@ after_initialize do
   # 10. 整合 TLP 元件 (如果存在)
   DiscourseEvent.on(:topic_previews_ready) do
     if defined?(::TopicPreviews)
-      # 發送準備好的事件給前端
-      MessageBus.publish('/thumbnail-toggle/ready', {})
-      
       # 修補 TLP 的序列化器 (只在伺服器端)
       if defined?(::TopicPreviews::TopicListItemSerializerExtension)
         module ::TopicPreviews
