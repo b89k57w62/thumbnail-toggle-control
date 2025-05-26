@@ -67,62 +67,58 @@ after_initialize do
     # 將來可能的操作，例如通知、日誌等
   end
 
-  # 10. 直接修補 TopicListItemSerializer - 使用更強制的方法
-  Rails.logger.info "Thumbnail Toggle: 開始修補 TopicListItemSerializer"
+  # 10. 使用更安全的方法修補序列化器
+  Rails.logger.info "Thumbnail Toggle: 開始修補序列化器"
   
-  # 使用 prepend 來確保我們的方法優先級最高
-  module ThumbnailToggleSerializerPatch
-    def image_url
-      Rails.logger.info "ThumbnailToggleSerializerPatch#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+  # 修補 TopicListItemSerializer
+  TopicListItemSerializer.class_eval do
+    # 檢查是否已經有 image_url 方法
+    if method_defined?(:image_url)
+      alias_method :original_image_url, :image_url
       
-      # 如果 tlp_show_thumbnail 為 false，返回 nil
-      unless object.tlp_show_thumbnail
-        Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil"
-        return nil
+      def image_url
+        Rails.logger.info "TopicListItemSerializer#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+        
+        unless object.tlp_show_thumbnail
+          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil"
+          return nil
+        end
+        
+        Rails.logger.info "Topic #{object.id}: 縮圖顯示，調用原始方法"
+        original_image_url
       end
-      
-      # 調用原始方法
-      Rails.logger.info "Topic #{object.id}: 縮圖顯示，調用原始方法"
-      super
+    else
+      # 如果沒有原始方法，創建一個新的
+      def image_url
+        Rails.logger.info "TopicListItemSerializer#image_url (new) called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+        
+        unless object.tlp_show_thumbnail
+          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil"
+          return nil
+        end
+        
+        # 嘗試從 topic 獲取圖片
+        object.image_url if object.respond_to?(:image_url)
+      end
     end
     
-    def thumbnail_url
-      Rails.logger.info "ThumbnailToggleSerializerPatch#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+    # 檢查是否已經有 thumbnail_url 方法
+    if method_defined?(:thumbnail_url)
+      alias_method :original_thumbnail_url, :thumbnail_url
       
-      # 如果 tlp_show_thumbnail 為 false，返回 nil
-      unless object.tlp_show_thumbnail
-        Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil"
-        return nil
-      end
-      
-      # 調用原始方法
-      Rails.logger.info "Topic #{object.id}: 縮圖顯示，調用原始方法"
-      if defined?(super)
-        super
-      else
-        image_url
+      def thumbnail_url
+        Rails.logger.info "TopicListItemSerializer#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+        
+        unless object.tlp_show_thumbnail
+          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil"
+          return nil
+        end
+        
+        Rails.logger.info "Topic #{object.id}: 縮圖顯示，調用原始方法"
+        original_thumbnail_url
       end
     end
   end
-  
-  TopicListItemSerializer.prepend(ThumbnailToggleSerializerPatch)
-  
-  # 11. 也修補 Topic 模型本身
-  module ThumbnailToggleTopicPatch
-    def image_url
-      Rails.logger.info "ThumbnailToggleTopicPatch#image_url called for topic #{id}, tlp_show_thumbnail: #{tlp_show_thumbnail}"
-      
-      unless tlp_show_thumbnail
-        Rails.logger.info "Topic #{id}: 縮圖被隱藏，返回 nil"
-        return nil
-      end
-      
-      Rails.logger.info "Topic #{id}: 縮圖顯示，調用原始方法"
-      super
-    end
-  end
-  
-  Topic.prepend(ThumbnailToggleTopicPatch)
 
   Rails.logger.info "Thumbnail Toggle Control: 插件初始化完成"
 end
