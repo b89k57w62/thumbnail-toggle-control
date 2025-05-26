@@ -14,7 +14,7 @@ export default {
           return;
         }
         
-        // 通過圖標判斷當前狀態 - 改用眼睛圖標
+        // 通過圖標判斷當前狀態 - 使用基本eye圖標
         const icon = button.querySelector('.d-icon');
         const isCurrentlyShowing = icon && icon.classList.contains('d-icon-eye');
         const newValue = !isCurrentlyShowing;

@@ -8,6 +8,10 @@ enabled_site_setting :thumbnail_toggle_enabled
 
 register_asset "stylesheets/common/thumbnail-toggle.scss"
 
+# 註冊需要的圖標
+register_svg_icon "eye"
+register_svg_icon "eye-slash"
+
 after_initialize do
   # 1. 註冊布林型 custom_field 存放顯示狀態
   Topic.register_custom_field_type('tlp_show_thumbnail', :boolean)
