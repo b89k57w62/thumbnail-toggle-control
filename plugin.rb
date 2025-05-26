@@ -85,7 +85,9 @@ after_initialize do
         end
         
         Rails.logger.info "Topic #{object.id}: 縮圖顯示，調用原始方法"
-        original_image_url
+        result = original_image_url
+        Rails.logger.info "Topic #{object.id}: 原始方法返回: #{result}"
+        result
       end
     else
       # 如果沒有原始方法，創建一個新的
@@ -98,7 +100,9 @@ after_initialize do
         end
         
         # 嘗試從 topic 獲取圖片
-        object.image_url if object.respond_to?(:image_url)
+        result = object.image_url if object.respond_to?(:image_url)
+        Rails.logger.info "Topic #{object.id}: 新方法返回: #{result}"
+        result
       end
     end
     
@@ -115,9 +119,57 @@ after_initialize do
         end
         
         Rails.logger.info "Topic #{object.id}: 縮圖顯示，調用原始方法"
-        original_thumbnail_url
+        result = original_thumbnail_url
+        Rails.logger.info "Topic #{object.id}: 原始 thumbnail_url 返回: #{result}"
+        result
       end
     end
+  end
+  
+  # 檢查是否有 TLP sidecar 插件並修補其序列化器
+  if defined?(::TopicListItemEditsMixin)
+    Rails.logger.info "Thumbnail Toggle: 檢測到 TLP sidecar 插件，修補 TopicListItemEditsMixin"
+    
+    # 修補 TopicListItemEditsMixin
+    ::TopicListItemEditsMixin.class_eval do
+      if method_defined?(:image_url)
+        alias_method :tlp_original_image_url, :image_url
+        
+        def image_url
+          Rails.logger.info "TopicListItemEditsMixin#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+          
+          unless object.tlp_show_thumbnail
+            Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖被隱藏，返回 nil"
+            return nil
+          end
+          
+          Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖顯示，調用原始方法"
+          result = tlp_original_image_url
+          Rails.logger.info "Topic #{object.id}: TLP sidecar 原始方法返回: #{result}"
+          result
+        end
+      end
+      
+      if method_defined?(:thumbnail_url)
+        alias_method :tlp_original_thumbnail_url, :thumbnail_url
+        
+        def thumbnail_url
+          Rails.logger.info "TopicListItemEditsMixin#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+          
+          unless object.tlp_show_thumbnail
+            Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖被隱藏，返回 nil"
+            return nil
+          end
+          
+          Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖顯示，調用原始方法"
+          result = tlp_original_thumbnail_url
+          Rails.logger.info "Topic #{object.id}: TLP sidecar 原始 thumbnail_url 返回: #{result}"
+          result
+        end
+      end
+    end
+  else
+    Rails.logger.info "Thumbnail Toggle: 未檢測到 TLP sidecar 插件"
   end
 
   Rails.logger.info "Thumbnail Toggle Control: 插件初始化完成"
