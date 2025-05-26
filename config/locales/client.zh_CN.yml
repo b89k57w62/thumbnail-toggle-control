@@ -1,0 +1,15 @@
+zh_CN:
+  js:
+    thumbnail_toggle:
+      title: "缩略图切换"
+      show: "显示"
+      hide: "隐藏"
+      show_thumbnail: "显示缩略图"
+      hide_thumbnail: "隐藏缩略图"
+    category:
+      thumbnail_toggle_enabled: "为此分类中的主题启用缩略图切换功能"
+      thumbnail_toggle_default: "此分类中缩略图的默认状态（勾选 = 显示）"
+    site_settings:
+      thumbnail_toggle_enabled: "在全站启用缩略图切换功能"
+      thumbnail_toggle_category_override: "允许分类设置覆盖全局缩略图设置"
+      thumbnail_toggle_default: "缩略图的默认状态（勾选 = 默认显示）" 

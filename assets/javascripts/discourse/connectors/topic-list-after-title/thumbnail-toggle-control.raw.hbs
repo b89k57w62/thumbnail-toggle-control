@@ -3,15 +3,17 @@
     <div class="topic-thumbnail-toggle" data-topic-id="{{context.topic.id}}">
       {{#if context.topic.tlp_show_thumbnail}}
         <button class="btn-icon toggle-thumbnail-btn" 
-                title="隱藏縮圖" 
+                title="{{i18n 'thumbnail_toggle.hide_thumbnail'}}" 
                 onclick="toggleThumbnail({{context.topic.id}})">
-          <i class="d-icon d-icon-far-image"></i>
+          <i class="d-icon d-icon-eye-slash"></i>
+          <span class="btn-text">{{i18n 'thumbnail_toggle.hide'}}</span>
         </button>
       {{else}}
         <button class="btn-icon toggle-thumbnail-btn" 
-                title="顯示縮圖" 
+                title="{{i18n 'thumbnail_toggle.show_thumbnail'}}" 
                 onclick="toggleThumbnail({{context.topic.id}})">
-          <i class="d-icon d-icon-far-image-slash"></i>
+          <i class="d-icon d-icon-eye"></i>
+          <span class="btn-text">{{i18n 'thumbnail_toggle.show'}}</span>
         </button>
       {{/if}}
     </div>

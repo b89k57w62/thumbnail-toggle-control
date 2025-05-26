@@ -2,8 +2,10 @@ en:
   js:
     thumbnail_toggle:
       title: "Thumbnail Toggle"
-      show: "Show Thumbnail"
-      hide: "Hide Thumbnail"
+      show: "Show"
+      hide: "Hide"
+      show_thumbnail: "Show Thumbnail"
+      hide_thumbnail: "Hide Thumbnail"
     category:
       thumbnail_toggle_enabled: "Enable thumbnail toggle for topics in this category"
       thumbnail_toggle_default: "Default state of thumbnails in this category (checked = shown)"

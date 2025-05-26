@@ -14,15 +14,21 @@ export default {
           return;
         }
         
-        // 通過圖標判斷當前狀態
+        // 通過圖標判斷當前狀態 - 改用眼睛圖標
         const icon = button.querySelector('.d-icon');
-        const isCurrentlyShowing = icon && icon.classList.contains('d-icon-far-image');
+        const isCurrentlyShowing = icon && icon.classList.contains('d-icon-eye');
         const newValue = !isCurrentlyShowing;
         
         // 立即更新按鈕狀態和縮圖顯示以提供即時反饋
         if (icon) {
-          icon.className = newValue ? 'd-icon d-icon-far-image' : 'd-icon d-icon-far-image-slash';
-          button.title = newValue ? '隱藏縮圖' : '顯示縮圖';
+          icon.className = newValue ? 'd-icon d-icon-eye' : 'd-icon d-icon-eye-slash';
+          // 更新按鈕文字
+          const btnText = button.querySelector('.btn-text');
+          if (btnText) {
+            btnText.textContent = newValue ? I18n.t('js.thumbnail_toggle.hide') : I18n.t('js.thumbnail_toggle.show');
+          }
+          // 更新標題
+          button.title = newValue ? I18n.t('js.thumbnail_toggle.hide_thumbnail') : I18n.t('js.thumbnail_toggle.show_thumbnail');
         }
         
         // 立即在前端隱藏/顯示縮圖
@@ -37,8 +43,12 @@ export default {
         }).catch(error => {
           // 如果失敗，回滾按鈕狀態和縮圖顯示
           if (icon) {
-            icon.className = isCurrentlyShowing ? 'd-icon d-icon-far-image' : 'd-icon d-icon-far-image-slash';
-            button.title = isCurrentlyShowing ? '隱藏縮圖' : '顯示縮圖';
+            icon.className = isCurrentlyShowing ? 'd-icon d-icon-eye' : 'd-icon d-icon-eye-slash';
+            const btnText = button.querySelector('.btn-text');
+            if (btnText) {
+              btnText.textContent = isCurrentlyShowing ? I18n.t('js.thumbnail_toggle.hide') : I18n.t('js.thumbnail_toggle.show');
+            }
+            button.title = isCurrentlyShowing ? I18n.t('js.thumbnail_toggle.hide_thumbnail') : I18n.t('js.thumbnail_toggle.show_thumbnail');
           }
           toggleThumbnailInDOM(topicId, isCurrentlyShowing);
         });
@@ -112,7 +122,7 @@ export default {
         const button = topicElement.querySelector('.toggle-thumbnail-btn');
         if (button) {
           const icon = button.querySelector('.d-icon');
-          const shouldShow = icon && icon.classList.contains('d-icon-far-image');
+          const shouldShow = icon && icon.classList.contains('d-icon-eye');
           toggleThumbnailInDOM(topicId, shouldShow);
           return;
         }

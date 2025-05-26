@@ -34,23 +34,87 @@
   margin-left: 0.5em;
   
   .toggle-thumbnail-btn {
-    background: transparent;
-    color: var(--primary-medium);
-    border: 1px solid var(--primary-low);
-    padding: 0.25em 0.5em;
-    border-radius: 3px;
+    background: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+    padding: 0.4em 0.8em;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 0.85em;
     transition: all 0.2s ease;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4em;
+    white-space: nowrap;
     
     &:hover {
-      background: var(--primary-low);
-      color: var(--primary);
-      border-color: var(--primary-medium);
+      background: #0056b3;
+      border-color: #0056b3;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0, 123, 255, 0.3);
     }
     
     .d-icon {
+      font-size: 1.1em;
+      margin: 0;
+      flex-shrink: 0;
+    }
+    
+    .btn-text {
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+  }
+}
+
+// 主題頁面中的縮圖切換控制（topic-above-post-stream）
+.topic-above-post-stream .topic-thumbnail-toggle {
+  margin: 10px 0;
+  
+  .toggle-thumbnail-btn {
+    background: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    white-space: nowrap;
+    
+    &:hover {
+      background: #0056b3;
+      border-color: #0056b3;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 3px rgba(0, 123, 255, 0.3);
+    }
+    
+    .d-icon {
+      font-size: 1.2em;
+      margin: 0;
+      flex-shrink: 0;
+    }
+    
+    .btn-text {
       font-size: 1em;
+      font-weight: 500;
     }
   }
 }
