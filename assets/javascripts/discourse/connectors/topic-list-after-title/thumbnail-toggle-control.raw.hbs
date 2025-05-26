@@ -1,12 +1,21 @@
 {{#if siteSettings.thumbnail_toggle_enabled}}
-  {{#if currentUser.admin}}
-    <div class="thumbnail-toggle-debug">
-      <button class="btn-icon toggle-thumbnail-btn admin-control" onclick="toggleThumbnail({{context.topic.id}})" title="切換縮圖">
-        {{d-icon (if context.topic.tlp_show_thumbnail "far-image-slash" "far-image")}}
-        <span class="sr-only">切換縮圖</span>
+  {{#if context.currentUser.admin}}
+    <div class="topic-thumbnail-toggle" data-topic-id="{{context.topic.id}}">
+      <button class="btn-icon toggle-thumbnail-btn" 
+              title="{{#if context.topic.tlp_show_thumbnail}}隱藏縮圖{{else}}顯示縮圖{{/if}}" 
+              onclick="toggleThumbnail({{context.topic.id}})">
+        {{#if context.topic.tlp_show_thumbnail}}
+          <i class="d-icon d-icon-far-image"></i>
+          隱藏縮圖
+        {{else}}
+          <i class="d-icon d-icon-far-image-slash"></i>
+          顯示縮圖
+        {{/if}}
       </button>
-      <small style="font-size: 0.8em; color: #666;">
-        ID: {{context.topic.id}} | 狀態: {{context.topic.tlp_show_thumbnail}}
+      <small>
+        調試: ID={{context.topic.id}} | 狀態={{context.topic.tlp_show_thumbnail}}
+        <br>
+        圖片URL: {{context.topic.image_url}}
       </small>
     </div>
   {{/if}}

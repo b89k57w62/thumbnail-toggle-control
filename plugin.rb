@@ -67,61 +67,49 @@ after_initialize do
     # 將來可能的操作，例如通知、日誌等
   end
 
-  # 10. 整合 TLP 元件 - 修補序列化器
-  # 我們需要修補 TopicListItemSerializer 的 thumbnail_url 方法
-  add_to_serializer(:topic_list_item, :thumbnail_url, false) do
-    # 如果 tlp_show_thumbnail 為 false，返回 nil
-    return nil unless object.tlp_show_thumbnail
+  # 10. 直接修補 TopicListItemSerializer
+  TopicListItemSerializer.class_eval do
+    # 保存原始方法
+    if method_defined?(:image_url)
+      alias_method :original_image_url, :image_url
+    end
     
-    # 否則調用原始的 thumbnail_url 方法（如果存在）
-    if defined?(super)
-      super
-    else
-      # 如果沒有原始方法，嘗試獲取第一張圖片
-      if object.image_url.present?
-        object.image_url
-      elsif object.archetype != Archetype.private_message
-        # 嘗試從第一個帖子獲取圖片
-        post = object.first_post || object.posts.first
-        if post&.image_url.present?
-          post.image_url
-        end
+    if method_defined?(:thumbnail_url)
+      alias_method :original_thumbnail_url, :thumbnail_url
+    end
+    
+    # 重新定義 image_url 方法
+    def image_url
+      Rails.logger.debug "TopicListItemSerializer#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+      
+      # 如果 tlp_show_thumbnail 為 false，返回 nil
+      return nil unless object.tlp_show_thumbnail
+      
+      # 調用原始方法
+      if respond_to?(:original_image_url)
+        original_image_url
+      else
+        # 基本實現
+        object.image_url if object.respond_to?(:image_url)
+      end
+    end
+    
+    # 重新定義 thumbnail_url 方法
+    def thumbnail_url
+      Rails.logger.debug "TopicListItemSerializer#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+      
+      # 如果 tlp_show_thumbnail 為 false，返回 nil
+      return nil unless object.tlp_show_thumbnail
+      
+      # 調用原始方法
+      if respond_to?(:original_thumbnail_url)
+        original_thumbnail_url
+      else
+        # 回退到 image_url
+        image_url
       end
     end
   end
 
-  # 11. 如果 TLP sidecar 插件存在，修補其序列化器
-  if defined?(::TopicPreviews)
-    Rails.logger.info "TLP Sidecar 插件已檢測到，正在修補序列化器"
-    
-    # 修補 TopicListItemEditsMixin 的 thumbnail_url 方法
-    if defined?(::TopicListItemEditsMixin)
-      ::TopicListItemEditsMixin.class_eval do
-        alias_method :original_thumbnail_url, :thumbnail_url
-        
-        def thumbnail_url
-          # 檢查 tlp_show_thumbnail 狀態
-          return nil unless object.tlp_show_thumbnail
-          original_thumbnail_url
-        end
-      end
-    end
-    
-    # 也修補 TopicListItemSerializer 如果它被 TLP 擴展
-    TopicListItemSerializer.class_eval do
-      alias_method :original_thumbnail_url, :thumbnail_url if method_defined?(:thumbnail_url)
-      
-      def thumbnail_url
-        # 檢查 tlp_show_thumbnail 狀態
-        return nil unless object.tlp_show_thumbnail
-        
-        if respond_to?(:original_thumbnail_url)
-          original_thumbnail_url
-        else
-          # 回退到基本實現
-          object.image_url
-        end
-      end
-    end
-  end
+  Rails.logger.info "Thumbnail Toggle Control: 插件初始化完成"
 end

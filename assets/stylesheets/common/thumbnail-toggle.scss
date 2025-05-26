@@ -40,18 +40,34 @@
 
 // 主題頁面中的樣式
 .topic-thumbnail-toggle {
-  margin: 0.5em 0;
+  margin: 10px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
   
   .toggle-thumbnail-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.5em 1em;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
     border-radius: 4px;
-    background: var(--primary-very-low);
+    cursor: pointer;
+    font-size: 14px;
     
     &:hover {
-      background: var(--primary-low);
+      background: #0056b3;
     }
+    
+    .d-icon {
+      margin-right: 5px;
+    }
+  }
+  
+  small {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #6c757d;
   }
 } 
