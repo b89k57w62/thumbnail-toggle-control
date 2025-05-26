@@ -77,10 +77,12 @@ after_initialize do
       alias_method :original_image_url, :image_url
       
       def image_url
-        Rails.logger.info "TopicListItemSerializer#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+        Rails.logger.info "TopicListItemSerializer#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
         
-        unless object.tlp_show_thumbnail
-          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil"
+        # 更嚴格的布爾值檢查
+        show_thumbnail = object.tlp_show_thumbnail
+        if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
           return nil
         end
         
@@ -92,10 +94,12 @@ after_initialize do
     else
       # 如果沒有原始方法，創建一個新的
       def image_url
-        Rails.logger.info "TopicListItemSerializer#image_url (new) called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+        Rails.logger.info "TopicListItemSerializer#image_url (new) called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
         
-        unless object.tlp_show_thumbnail
-          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil"
+        # 更嚴格的布爾值檢查
+        show_thumbnail = object.tlp_show_thumbnail
+        if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
           return nil
         end
         
@@ -111,10 +115,12 @@ after_initialize do
       alias_method :original_thumbnail_url, :thumbnail_url
       
       def thumbnail_url
-        Rails.logger.info "TopicListItemSerializer#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+        Rails.logger.info "TopicListItemSerializer#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
         
-        unless object.tlp_show_thumbnail
-          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil"
+        # 更嚴格的布爾值檢查
+        show_thumbnail = object.tlp_show_thumbnail
+        if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+          Rails.logger.info "Topic #{object.id}: 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
           return nil
         end
         
@@ -136,10 +142,12 @@ after_initialize do
         alias_method :tlp_original_image_url, :image_url
         
         def image_url
-          Rails.logger.info "TopicListItemEditsMixin#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+          Rails.logger.info "TopicListItemEditsMixin#image_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
           
-          unless object.tlp_show_thumbnail
-            Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖被隱藏，返回 nil"
+          # 更嚴格的布爾值檢查
+          show_thumbnail = object.tlp_show_thumbnail
+          if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+            Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
             return nil
           end
           
@@ -154,10 +162,12 @@ after_initialize do
         alias_method :tlp_original_thumbnail_url, :thumbnail_url
         
         def thumbnail_url
-          Rails.logger.info "TopicListItemEditsMixin#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail}"
+          Rails.logger.info "TopicListItemEditsMixin#thumbnail_url called for topic #{object.id}, tlp_show_thumbnail: #{object.tlp_show_thumbnail} (#{object.tlp_show_thumbnail.class})"
           
-          unless object.tlp_show_thumbnail
-            Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖被隱藏，返回 nil"
+          # 更嚴格的布爾值檢查
+          show_thumbnail = object.tlp_show_thumbnail
+          if show_thumbnail == false || show_thumbnail == "false" || show_thumbnail.nil?
+            Rails.logger.info "Topic #{object.id}: TLP sidecar 縮圖被隱藏，返回 nil (值: #{show_thumbnail.inspect})"
             return nil
           end
           
