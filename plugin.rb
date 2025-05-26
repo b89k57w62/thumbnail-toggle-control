@@ -1,8 +1,8 @@
-# name: discourse-thumbnail-toggle
+# name: thumbnail-toggle-control
 # about: Adds a toggle button to show/hide topic thumbnails via a custom_field
 # version: 1.1
 # authors: Jeffrey
-# url: https://github.com/b89k57w62/discourse-thumbnail-toggle
+# url: https://github.com/b89k57w62/thumbnail-toggle-control
 
 enabled_site_setting :thumbnail_toggle_enabled
 

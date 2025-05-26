@@ -10,8 +10,8 @@ export default {
       // 移除 topic-list-item 修改，改用其他方式處理重新渲染
       
       // 在主題頁面也添加處理
-      api.modifyClass("controller:topic", {
-        pluginId: "discourse-thumbnail-toggle",
+              api.modifyClass("controller:topic", {
+          pluginId: "thumbnail-toggle-control",
         actions: {
           toggleThumbnail() {
             const topic = this.model.topic || this.model;
