@@ -1,17 +1,21 @@
 {{#if siteSettings.thumbnail_toggle_enabled}}
   {{#if context.currentUser.admin}}
     <div class="topic-thumbnail-toggle" data-topic-id="{{context.topic.id}}">
-      <button class="btn-icon toggle-thumbnail-btn" 
-              title="{{#if context.topic.tlp_show_thumbnail}}隱藏縮圖{{else}}顯示縮圖{{/if}}" 
-              onclick="toggleThumbnail({{context.topic.id}})">
-        {{#if context.topic.tlp_show_thumbnail}}
+      {{#if context.topic.tlp_show_thumbnail}}
+        <button class="btn-icon toggle-thumbnail-btn" 
+                title="隱藏縮圖" 
+                onclick="toggleThumbnail({{context.topic.id}})">
           <i class="d-icon d-icon-far-image"></i>
           隱藏縮圖
-        {{else}}
+        </button>
+      {{else}}
+        <button class="btn-icon toggle-thumbnail-btn" 
+                title="顯示縮圖" 
+                onclick="toggleThumbnail({{context.topic.id}})">
           <i class="d-icon d-icon-far-image-slash"></i>
           顯示縮圖
-        {{/if}}
-      </button>
+        </button>
+      {{/if}}
       <small>
         調試: ID={{context.topic.id}} | 狀態={{context.topic.tlp_show_thumbnail}}
         <br>
