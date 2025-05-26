@@ -1,0 +1,13 @@
+{{#if siteSettings.thumbnail_toggle_enabled}}
+  {{#if currentUser.admin}}
+    <div class="thumbnail-toggle-debug">
+      <button class="btn-icon toggle-thumbnail-btn admin-control" onclick="toggleThumbnail({{context.topic.id}})" title="切換縮圖">
+        {{d-icon (if context.topic.tlp_show_thumbnail "far-image-slash" "far-image")}}
+        <span class="sr-only">切換縮圖</span>
+      </button>
+      <small style="font-size: 0.8em; color: #666;">
+        ID: {{context.topic.id}} | 狀態: {{context.topic.tlp_show_thumbnail}}
+      </small>
+    </div>
+  {{/if}}
+{{/if}} 

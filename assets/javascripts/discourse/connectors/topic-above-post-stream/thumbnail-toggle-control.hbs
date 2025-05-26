@@ -1,9 +1,9 @@
 {{#if this.siteSettings.thumbnail_toggle_enabled}}
   {{#if this.currentUser.admin}}
     <div class="topic-thumbnail-toggle">
-      <button class="btn-icon toggle-thumbnail-btn" title={{i18n (if this.context.model.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}} {{on "click" (action "toggleThumbnail")}}>
-        {{d-icon (if this.context.model.tlp_show_thumbnail "far-image-slash" "far-image")}}
-        {{i18n (if this.context.model.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}}
+      <button class="btn-icon toggle-thumbnail-btn" title={{i18n (if this.topic.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}} {{on "click" (action "toggleThumbnail")}}>
+        {{d-icon (if this.topic.tlp_show_thumbnail "far-image-slash" "far-image")}}
+        {{i18n (if this.topic.tlp_show_thumbnail "thumbnail_toggle.hide" "thumbnail_toggle.show")}}
       </button>
     </div>
   {{/if}}
