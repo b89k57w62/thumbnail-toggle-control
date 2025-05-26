@@ -7,30 +7,7 @@ export default {
   initialize(container) {
     withPluginApi("1.4.0", api => {
       
-      // 自定義事件處理 - 使用 try-catch 避免找不到組件的錯誤
-      try {
-        api.modifyClass("component:topic-list-item", {
-          pluginId: "discourse-thumbnail-toggle",
-          didInsertElement() {
-            this._super(...arguments);
-            
-            // 確保我們有主題資料
-            const topic = this.get("topic");
-            if (!topic) return;
-            
-            // 在主題上添加 tlp_show_thumbnail 觀察器
-            // 當值變化時強制重新渲染
-            if (!topic._tlpObserverAdded) {
-              topic.addObserver("tlp_show_thumbnail", () => {
-                this.queueRerender();
-              });
-              topic._tlpObserverAdded = true;
-            }
-          }
-        });
-      } catch (error) {
-        console.log("thumbnail-toggle: topic-list-item component not found, skipping modification");
-      }
+      // 移除 topic-list-item 修改，改用其他方式處理重新渲染
       
       // 在主題頁面也添加處理
       api.modifyClass("controller:topic", {

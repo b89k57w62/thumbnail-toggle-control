@@ -14,6 +14,7 @@ after_initialize do
 
   # 2. 讓 PostRevisor 幫我們追蹤這個欄位的變動
   PostRevisor.track_topic_field(:tlp_show_thumbnail) do |tc, v|
+    Rails.logger.info "Thumbnail toggle: 更新主題 #{tc.topic.id} 的縮圖狀態為 #{v}"
     tc.topic.custom_fields['tlp_show_thumbnail'] = v
     tc.topic.save_custom_fields(true)
     

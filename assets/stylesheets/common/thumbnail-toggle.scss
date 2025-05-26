@@ -26,6 +26,18 @@
   }
 }
 
+// 調試信息樣式
+.thumbnail-toggle-debug {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-left: 0.5em;
+  
+  small {
+    white-space: nowrap;
+  }
+}
+
 // 主題頁面中的樣式
 .topic-thumbnail-toggle {
   margin: 0.5em 0;
