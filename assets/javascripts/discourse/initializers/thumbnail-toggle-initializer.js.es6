@@ -1,12 +1,13 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
-import { getOwner } from "discourse-common/lib/get-owner";
+import { MessageBus } from "discourse/lib/message-bus";
+
 
 export default {
   name: "thumbnail-toggle-initializer",
   initialize(container) {
     withPluginApi("1.4.0", api => {
       // 註冊 MessageBus 監聽
-      api.MessageBus.subscribe("/thumbnail-toggle/ready", () => {
+      MessageBus.subscribe("/thumbnail-toggle/ready", () => {
         console.log("Thumbnail Toggle 插件已準備好");
       });
       
