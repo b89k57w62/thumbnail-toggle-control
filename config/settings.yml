@@ -8,5 +8,5 @@ plugins:
     description: "Allow category settings to override global thumbnail display settings"
   thumbnail_toggle_default:
     client: true
-    default: true
+    default: false
     description: "Default state for thumbnails (show or hide)" 
