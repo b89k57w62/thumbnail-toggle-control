@@ -65,22 +65,57 @@ export default {
           const images = topicRow.querySelectorAll(selector);
           images.forEach(img => {
             if (img.src && 
-                (img.src.includes('uploads') || img.src.includes('optimized')) &&
+                (img.src.includes('uploads') || img.src.includes('optimized') || img.src.includes('/images/')) &&
                 !img.src.includes('avatar') &&
-                !img.src.includes('emoji') &&
-                img.width > 50 && img.height > 50) {
+                !img.src.includes('emoji')) {
               
-              if (show) {
-                img.style.display = '';
-                img.style.visibility = '';
-                img.classList.remove('thumbnail-hidden');
-              } else {
-                img.style.display = 'none';
-                img.classList.add('thumbnail-hidden');
+              const isPossibleThumbnail = 
+                img.naturalWidth > 50 ||
+                img.width > 50 ||
+                img.getAttribute('width') > 50 ||
+                img.parentElement.classList.contains('thumbnail') ||
+                img.parentElement.classList.contains('preview') ||
+                img.classList.contains('thumbnail') ||
+                img.classList.contains('preview');
+                
+              const isImageLoaded = img.complete && img.naturalHeight !== 0;
+              
+              if (isPossibleThumbnail || !isImageLoaded) {
+                if (show) {
+                  img.style.display = '';
+                  img.style.visibility = '';
+                  img.classList.remove('thumbnail-hidden');
+                } else {
+                  img.style.display = 'none';
+                  img.classList.add('thumbnail-hidden');
+                }
               }
             }
           });
         });
+        
+        setTimeout(() => {
+          possibleSelectors.forEach(selector => {
+            const images = topicRow.querySelectorAll(selector);
+            images.forEach(img => {
+              if (img.src && 
+                  (img.src.includes('uploads') || img.src.includes('optimized') || img.src.includes('/images/')) &&
+                  !img.src.includes('avatar') &&
+                  !img.src.includes('emoji') &&
+                  (img.naturalWidth > 50 && img.naturalHeight > 50)) {
+                
+                if (show) {
+                  img.style.display = '';
+                  img.style.visibility = '';
+                  img.classList.remove('thumbnail-hidden');
+                } else {
+                  img.style.display = 'none';
+                  img.classList.add('thumbnail-hidden');
+                }
+              }
+            });
+          });
+        }, 100);
       }
       
       api.onPageChange((url, title) => {
@@ -118,9 +153,15 @@ export default {
         });
       }
       
+      // 增加多次嘗試，確保在手機設備上也能正確初始化
       setTimeout(() => {
         applyThumbnailToggleToAllTopics();
       }, 1000);
+      
+      // 手機設備可能需要更長時間載入
+      setTimeout(() => {
+        applyThumbnailToggleToAllTopics();
+      }, 2000);
     });
   }
 }; 

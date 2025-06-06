@@ -118,4 +118,19 @@
 
 .thumbnail-hidden {
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+}
+
+// 針對手機設備的額外隱藏規則
+@media screen and (max-width: 768px) {
+  .thumbnail-hidden {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
 } 
